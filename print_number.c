@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * print_number - Prints a number
+ * print_number - Prints an integer
  * @num: The number to print
  *
  * Return: The number of digits printed
@@ -9,6 +9,13 @@
 int print_number(int num)
 {
 	int count = 0;
+
+	if (num == 0)
+	{
+		_putchar('0');
+		count++;
+		return count;
+	}
 
 	if (num < 0)
 	{
@@ -23,5 +30,5 @@ int print_number(int num)
 	_putchar((num % 10) + '0');
 	count++;
 
-	return (count);
+	return count;
 }
