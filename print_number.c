@@ -14,7 +14,7 @@ int print_number(int num)
 	{
 		_putchar('0');
 		count++;
-		return count;
+		return (count);
 	}
 
 	if (num < 0)
@@ -30,5 +30,6 @@ int print_number(int num)
 	_putchar((num % 10) + '0');
 	count++;
 
-	return count;
+	return (count);
 }
+
