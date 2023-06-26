@@ -14,10 +14,10 @@ int _printf(const char *format, ...)
 	char c;
 	int num;
 
+	va_start(args, format);
+
 	if (format == NULL)
 		return (-1);
-
-	va_start(args, format);
 
 	while (*format)
 	{
@@ -39,7 +39,7 @@ int _printf(const char *format, ...)
 			}
 			else if (*format == 'c')
 			{
-				c = (char)va_arg(args, int);
+				c = (char) va_arg(args, int);
 				_putchar(c);
 				count++;
 			}
@@ -58,6 +58,12 @@ int _printf(const char *format, ...)
 			else if (*format == 'd' || *format == 'i')
 			{
 				num = va_arg(args, int);
+				if (num < 0)
+				{
+					_putchar('-');
+					count++;
+					num = -num;
+				}
 				count += print_number(num);
 			}
 			else
