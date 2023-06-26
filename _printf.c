@@ -12,6 +12,7 @@ int _printf(const char *format, ...)
 	int count = 0;
 	char *str;
 	char c;
+	int num;
 
 	va_start(args, format);
 
@@ -54,6 +55,11 @@ int _printf(const char *format, ...)
 					str++;
 				}
 			}
+			else if (*format == 'd' || *format == 'i')
+			{
+				num = va_arg(args, int);
+				count += print_number(num);
+			}
 			else
 			{
 				_putchar('%');
@@ -68,3 +74,4 @@ int _printf(const char *format, ...)
 
 	return (count);
 }
+
