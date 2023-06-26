@@ -2,53 +2,62 @@
 
 /**
  * _printf - Produces output according to a format.
- * @format: Format string.
+ * @format: Character string containing the format.
  *
- * Return: Number of characters printed.
+ * Return: The number of characters printed.
  */
 int _printf(const char *format, ...)
 {
-	if (format == NULL)
-		return -1;
-
 	va_list args;
-	int printed_chars = 0;
-
 	va_start(args, format);
 
-	while (*format)
+	int printed_chars = 0;
+	char c;
+	char *s;
+
+	while (*format != '\0')
 	{
-		if (*format != '%')
+		if (*format == '%')
 		{
-			write(1, format, 1);
-			printed_chars++;
+			format++; /* Move to the next character after '%' */
+
+			/* Handle conversion specifiers */
+			switch (*format)
+			{
+				case 'c':
+					c = (char)va_arg(args, int);
+					putchar(c);
+					printed_chars++;
+					break;
+
+				case 's':
+					s = va_arg(args, char *);
+					while (*s != '\0')
+					{
+						putchar(*s);
+						s++;
+						printed_chars++;
+					}
+					break;
+
+				case '%':
+					putchar('%');
+					printed_chars++;
+					break;
+
+				default:
+					putchar('%');
+					putchar(*format);
+					printed_chars += 2;
+					break;
+			}
 		}
 		else
 		{
-			format++;
-			if (*format == '%')
-			{
-				write(1, "%", 1);
-				printed_chars++;
-			}
-			else if (*format == 'c')
-			{
-				char c = (char) va_arg(args, int);
-				write(1, &c, 1);
-				printed_chars++;
-			}
-			else if (*format == 's')
-			{
-				char *str = va_arg(args, char *);
-				if (str == NULL)
-					str = "(null)";
-				int len = 0;
-				while (str[len])
-					len++;
-				write(1, str, len);
-				printed_chars += len;
-			}
+			putchar(*format);
+			printed_chars++;
 		}
+
 		format++;
 	}
 

@@ -1,75 +1,92 @@
 #include "main.h"
 
 /**
- * _printf - Printf function
- * @format: Format string
+ * _printf - Produces output according to a format.
+ * @format: Character string containing the format.
  *
- * Return: Number of characters printed
+ * Return: The number of characters printed.
  */
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int count = 0;
-	const char *ptr;
-
 	va_start(args, format);
-	for (ptr = format; *ptr != '\0'; ptr++)
+
+	int printed_chars = 0;
+	char c;
+	char *s;
+	int d;
+
+	while (*format != '\0')
 	{
-		if (*ptr != '%')
+		if (*format == '%')
 		{
-			_putchar(*ptr);
-			count++;
-			continue;
+			format++; /* Move to the next character after '%' */
+
+			/* Handle conversion specifiers */
+			switch (*format)
+			{
+				case 'c':
+					c = (char)va_arg(args, int);
+					putchar(c);
+					printed_chars++;
+					break;
+
+				case 's':
+					s = va_arg(args, char *);
+					while (*s != '\0')
+					{
+						putchar(*s);
+						s++;
+						printed_chars++;
+					}
+					break;
+
+				case 'd':
+				case 'i':
+					d = va_arg(args, int);
+					printed_chars += print_number(d);
+					break;
+
+				case '%':
+					putchar('%');
+					printed_chars++;
+					break;
+
+				default:
+					putchar('%');
+					putchar(*format);
+					printed_chars += 2;
+					break;
+			}
+		}
+		else
+		{
+			putchar(*format);
+			printed_chars++;
 		}
 
-		ptr++;
-
-		if (*ptr == '\0')
-			return (-1);
-
-		switch (*ptr)
-		{
-			case 'c':
-				_putchar(va_arg(args, int));
-				count++;
-				break;
-			case 's':
-				count += _puts(va_arg(args, char *));
-				break;
-			case 'd':
-			case 'i':
-				count += _print_number(va_arg(args, int));
-				break;
-			case '%':
-				_putchar('%');
-				count++;
-				break;
-			default:
-				_putchar('%');
-				_putchar(*ptr);
-				count += 2;
-				break;
-		}
+		format++;
 	}
+
 	va_end(args);
 
-	return (count);
+	return (printed_chars);
 }
 
 /**
- * _print_number - Print a number
- * @n: Number to print
+ * print_number - Prints a number.
+ * @n: The number to be printed.
  *
- * Return: Number of digits printed
+ * Return: The number of characters printed.
  */
-int _print_number(int n)
+int print_number(int n)
 {
 	unsigned int num;
-	int count = 0;
+	int digit, count = 0;
 
 	if (n < 0)
 	{
-		_putchar('-');
+		putchar('-');
 		count++;
 		num = -n;
 	}
@@ -79,9 +96,12 @@ int _print_number(int n)
 	}
 
 	if (num / 10)
-		count += _print_number(num / 10);
+	{
+		count += print_number(num / 10);
+	}
 
-	_putchar((num % 10) + '0');
+	digit = num % 10 + '0';
+	putchar(digit);
 	count++;
 
 	return (count);
