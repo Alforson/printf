@@ -1,10 +1,11 @@
 #include "main.h"
+#include <stdarg.h>
 
 /**
- * _printf - Produces output according to a format.
- * @format: Character string containing the format.
+ * _printf - Prints output according to a format
+ * @format: The format string
  *
- * Return: The number of characters printed.
+ * Return: The number of characters printed (excluding the null byte)
  */
 int _printf(const char *format, ...)
 {
@@ -21,10 +22,14 @@ int _printf(const char *format, ...)
 
 	while (*format)
 	{
-		if (*format == '%')
+		if (*format != '%')
+		{
+			_putchar(*format);
+			count++;
+		}
+		else
 		{
 			format++;
-
 			if (*format == '\0')
 				return (-1);
 
@@ -62,6 +67,11 @@ int _printf(const char *format, ...)
 				}
 				count += print_number(num);
 			}
+			else if (*format == 'b')
+			{
+				num = va_arg(args, unsigned int);
+				count += print_binary(num);
+			}
 			else
 			{
 				_putchar('%');
@@ -69,12 +79,6 @@ int _printf(const char *format, ...)
 				count += 2;
 			}
 		}
-		else
-		{
-			_putchar(*format);
-			count++;
-		}
-
 		format++;
 	}
 
